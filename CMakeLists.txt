@@ -20,6 +20,13 @@ set(
     geometry/vector.test.cpp
 )
 
+set(
+        IMAGE_SOURCES
+        image/image.h
+        image/image.cpp
+        image/image.test.cpp
+)
+
 add_executable(PathTracer main.cpp ${GEOMETRY_SOURCES})
 conan_target_link_libraries(PathTracer)
 
