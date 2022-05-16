@@ -10,6 +10,6 @@ namespace geometry {
         float& operator[](const int index);
         const float& operator[](const int index) const;
     private:
-        std::array<float, 2> data;
+        std::array<float, 3> data;
     };
 }
