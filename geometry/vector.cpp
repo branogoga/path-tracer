@@ -1,7 +1,7 @@
 #include "vector.h"
 
 namespace geometry {
-    Vector::Vector(): data({0.0f, 0.0f, 0.0f}) {
+    Vector::Vector() {
     }
 
     float& Vector::operator[](const int index) {
