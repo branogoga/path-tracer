@@ -13,7 +13,6 @@ include(${CONAN_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # add the executable
-
 set(
     GEOMETRY_SOURCES
     geometry/vector.h
@@ -22,6 +21,12 @@ set(
 )
 
 add_executable(PathTracer main.cpp ${GEOMETRY_SOURCES})
-# target_link_libraries(PathTracer ${CONAN_LIBS})
 conan_target_link_libraries(PathTracer)
-# target_link_libraries(PathTracer CONAN_PKG::gtest)
+
+# set warning level
+if(MSVC)
+    target_compile_options(PathTracer PRIVATE /W4 /WX)
+else()
+    target_compile_options(PathTracer PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
