@@ -1,5 +1,6 @@
 [requires]
 gtest/1.11.0
+libpng/1.6.37
 
 [generators]
 cmake

@@ -25,9 +25,12 @@ set(
         image/image.h
         image/image.cpp
         image/image.test.cpp
+        image/io/png.h
+        image/io/png.cpp
+        image/io/png.test.cpp
 )
 
-add_executable(PathTracer main.cpp ${GEOMETRY_SOURCES})
+add_executable(PathTracer main.cpp ${GEOMETRY_SOURCES} ${IMAGE_SOURCES})
 conan_target_link_libraries(PathTracer)
 
 # set warning level
@@ -35,5 +38,15 @@ if(MSVC)
     target_compile_options(PathTracer PRIVATE /W4 /WX)
 else()
     target_compile_options(PathTracer PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+add_executable(PathTracerTest test.cpp ${GEOMETRY_SOURCES} ${IMAGE_SOURCES})
+conan_target_link_libraries(PathTracerTest)
+
+# set warning level
+if(MSVC)
+    target_compile_options(PathTracerTest PRIVATE /W4 /WX)
+else()
+    target_compile_options(PathTracerTest PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 

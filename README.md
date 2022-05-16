@@ -10,7 +10,7 @@ Modern path-tracer.
 2. [Connan package manager](https://conan.io/)
 
 ### Build and run
-'''
+'
 mkdir .conan && cd .conan
 conan install .. -s compiler.libcxx=libstdc++11
-'''
+'
