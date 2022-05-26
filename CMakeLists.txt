@@ -15,6 +15,9 @@ conan_basic_setup()
 # add the executable
 set(
     GEOMETRY_SOURCES
+    geometry/matrix.h
+    geometry/matrix.cpp
+    geometry/matrix.test.cpp
     geometry/point.h
     geometry/point.cpp
     geometry/point.test.cpp
