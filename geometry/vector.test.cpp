@@ -1,3 +1,4 @@
+#include "axis.h"
 #include "vector.h"
 
 #include "gtest/gtest.h"
@@ -36,6 +37,22 @@ TEST(Vector, assignment)
     EXPECT_EQ(3.0f, v2[Axis::Z]);
 }
 
+
+TEST(Vector, comparison)
+{
+    EXPECT_TRUE(Vector({1.0f, 2.0f, 3.0f}) == Vector({1.0f, 2.0f, 3.0f}));
+    EXPECT_FALSE(Vector({1.0f, 2.0f, 3.0f}) != Vector({1.0f, 2.0f, 3.0f}));
+
+    EXPECT_FALSE(Vector({1.0f, 2.0f, 3.0f}) == Vector({7.0f, 2.0f, 3.0f}));
+    EXPECT_TRUE(Vector({1.0f, 2.0f, 3.0f}) != Vector({7.0f, 2.0f, 3.0f}));
+
+    EXPECT_FALSE(Vector({1.0f, 2.0f, 3.0f}) == Vector({1.0f, 7.0f, 3.0f}));
+    EXPECT_TRUE(Vector({1.0f, 2.0f, 3.0f}) != Vector({1.0f, 7.0f, 3.0f}));
+
+    EXPECT_FALSE(Vector({1.0f, 2.0f, 3.0f}) == Vector({1.0f, 2.0f, 7.0f}));
+    EXPECT_TRUE(Vector({1.0f, 2.0f, 3.0f}) != Vector({1.0f, 2.0f, 7.0f}));
+}
+
 TEST(Vector, addition)
 {
     auto v1 = Vector({1.0f, 2.0f, 3.0f});
@@ -72,6 +89,17 @@ TEST(Vector, length)
     EXPECT_EQ(7.0f, length(Vector({7.0f, 0.0f, 0.0f})));
     EXPECT_EQ(1.0f, length(Vector({-1.0f, 0.0f, 0.0f})));
     EXPECT_FLOAT_EQ(sqrt(14.0f), length(Vector({1.0f, 2.0f, 3.0f})));
+}
+
+TEST(Vector, length2)
+{
+    EXPECT_EQ(0.0f, length2(Vector({0.0f, 0.0f, 0.0f})));
+    EXPECT_EQ(4.0f, length2(Vector({2.0f, 0.0f, 0.0f})));
+    EXPECT_EQ(1.0f, length2(Vector({0.0f, 1.0f, 0.0f})));
+    EXPECT_EQ(1.0f, length2(Vector({0.0f, 0.0f, 1.0f})));
+    EXPECT_EQ(49.0f, length2(Vector({7.0f, 0.0f, 0.0f})));
+    EXPECT_EQ(1.0f, length2(Vector({-1.0f, 0.0f, 0.0f})));
+    EXPECT_FLOAT_EQ(14.0f, length2(Vector({1.0f, 2.0f, 3.0f})));
 }
 
 TEST(Vector, dot)

@@ -15,22 +15,39 @@ conan_basic_setup()
 # add the executable
 set(
     GEOMETRY_SOURCES
+    geometry/point.h
+    geometry/point.cpp
+    geometry/point.test.cpp
     geometry/vector.h
     geometry/vector.cpp
     geometry/vector.test.cpp
 )
 
 set(
-        IMAGE_SOURCES
-        image/image.h
-        image/image.cpp
-        image/image.test.cpp
-        image/io/png.h
-        image/io/png.cpp
-        image/io/png.test.cpp
+    IMAGE_SOURCES
+    image/image.h
+    image/image.cpp
+    image/image.test.cpp
+    image/io/png.h
+    image/io/png.cpp
+    image/io/png.test.cpp
 )
 
-add_executable(PathTracer main.cpp ${GEOMETRY_SOURCES} ${IMAGE_SOURCES})
+set(
+    SCENE_SOURCES
+    scene/camera.h
+    scene/camera.cpp
+    scene/camera.test.cpp
+)
+
+set(
+    SOURCES
+    ${GEOMETRY_SOURCES}
+    ${IMAGE_SOURCES}
+    ${SCENE_SOURCES}
+)
+
+add_executable(PathTracer main.cpp ${SOURCES})
 conan_target_link_libraries(PathTracer)
 
 # set warning level
@@ -40,7 +57,7 @@ else()
     target_compile_options(PathTracer PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
-add_executable(PathTracerTest test.cpp ${GEOMETRY_SOURCES} ${IMAGE_SOURCES})
+add_executable(PathTracerTest test.cpp ${SOURCES})
 conan_target_link_libraries(PathTracerTest)
 
 # set warning level
