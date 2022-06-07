@@ -72,6 +72,170 @@ namespace geometry
         return data[index];
     }
 
+    Matrix Matrix::inverse() const
+    {
+        std::array<float, 16> inv;
+
+        inv[0] = data[5]  * data[10] * data[15] -
+                 data[5]  * data[11] * data[14] -
+                 data[9]  * data[6]  * data[15] +
+                 data[9]  * data[7]  * data[14] +
+                 data[13] * data[6]  * data[11] -
+                 data[13] * data[7]  * data[10];
+
+        inv[4] = -data[4]  * data[10] * data[15] +
+                 data[4]  * data[11] * data[14] +
+                 data[8]  * data[6]  * data[15] -
+                 data[8]  * data[7]  * data[14] -
+                 data[12] * data[6]  * data[11] +
+                 data[12] * data[7]  * data[10];
+
+        inv[8] = data[4]  * data[9] * data[15] -
+                 data[4]  * data[11] * data[13] -
+                 data[8]  * data[5] * data[15] +
+                 data[8]  * data[7] * data[13] +
+                 data[12] * data[5] * data[11] -
+                 data[12] * data[7] * data[9];
+
+        inv[12] = -data[4]  * data[9] * data[14] +
+                  data[4]  * data[10] * data[13] +
+                  data[8]  * data[5] * data[14] -
+                  data[8]  * data[6] * data[13] -
+                  data[12] * data[5] * data[10] +
+                  data[12] * data[6] * data[9];
+
+        inv[1] = -data[1]  * data[10] * data[15] +
+                 data[1]  * data[11] * data[14] +
+                 data[9]  * data[2] * data[15] -
+                 data[9]  * data[3] * data[14] -
+                 data[13] * data[2] * data[11] +
+                 data[13] * data[3] * data[10];
+
+        inv[5] = data[0]  * data[10] * data[15] -
+                 data[0]  * data[11] * data[14] -
+                 data[8]  * data[2] * data[15] +
+                 data[8]  * data[3] * data[14] +
+                 data[12] * data[2] * data[11] -
+                 data[12] * data[3] * data[10];
+
+        inv[9] = -data[0]  * data[9] * data[15] +
+                 data[0]  * data[11] * data[13] +
+                 data[8]  * data[1] * data[15] -
+                 data[8]  * data[3] * data[13] -
+                 data[12] * data[1] * data[11] +
+                 data[12] * data[3] * data[9];
+
+        inv[13] = data[0]  * data[9] * data[14] -
+                  data[0]  * data[10] * data[13] -
+                  data[8]  * data[1] * data[14] +
+                  data[8]  * data[2] * data[13] +
+                  data[12] * data[1] * data[10] -
+                  data[12] * data[2] * data[9];
+
+        inv[2] = data[1]  * data[6] * data[15] -
+                 data[1]  * data[7] * data[14] -
+                 data[5]  * data[2] * data[15] +
+                 data[5]  * data[3] * data[14] +
+                 data[13] * data[2] * data[7] -
+                 data[13] * data[3] * data[6];
+
+        inv[6] = -data[0]  * data[6] * data[15] +
+                 data[0]  * data[7] * data[14] +
+                 data[4]  * data[2] * data[15] -
+                 data[4]  * data[3] * data[14] -
+                 data[12] * data[2] * data[7] +
+                 data[12] * data[3] * data[6];
+
+        inv[10] = data[0]  * data[5] * data[15] -
+                  data[0]  * data[7] * data[13] -
+                  data[4]  * data[1] * data[15] +
+                  data[4]  * data[3] * data[13] +
+                  data[12] * data[1] * data[7] -
+                  data[12] * data[3] * data[5];
+
+        inv[14] = -data[0]  * data[5] * data[14] +
+                  data[0]  * data[6] * data[13] +
+                  data[4]  * data[1] * data[14] -
+                  data[4]  * data[2] * data[13] -
+                  data[12] * data[1] * data[6] +
+                  data[12] * data[2] * data[5];
+
+        inv[3] = -data[1] * data[6] * data[11] +
+                 data[1] * data[7] * data[10] +
+                 data[5] * data[2] * data[11] -
+                 data[5] * data[3] * data[10] -
+                 data[9] * data[2] * data[7] +
+                 data[9] * data[3] * data[6];
+
+        inv[7] = data[0] * data[6] * data[11] -
+                 data[0] * data[7] * data[10] -
+                 data[4] * data[2] * data[11] +
+                 data[4] * data[3] * data[10] +
+                 data[8] * data[2] * data[7] -
+                 data[8] * data[3] * data[6];
+
+        inv[11] = -data[0] * data[5] * data[11] +
+                  data[0] * data[7] * data[9] +
+                  data[4] * data[1] * data[11] -
+                  data[4] * data[3] * data[9] -
+                  data[8] * data[1] * data[7] +
+                  data[8] * data[3] * data[5];
+
+        inv[15] = data[0] * data[5] * data[10] -
+                  data[0] * data[6] * data[9] -
+                  data[4] * data[1] * data[10] +
+                  data[4] * data[2] * data[9] +
+                  data[8] * data[1] * data[6] -
+                  data[8] * data[2] * data[5];
+
+        float det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
+
+        if (det == 0) {
+            throw std::invalid_argument("Unable to calculate inverse matrix for matrix with zero determinant.");
+        }
+
+        det = 1.0 / det;
+
+        for (size_t i = 0; i < 16; i++) {
+            inv[i] = inv[i] * det;
+        }
+
+        return Matrix(std::array<float, 16>({inv[0],inv[1],inv[2],inv[3],inv[4],inv[5],inv[6],inv[7],inv[8],inv[9],inv[10],inv[11],inv[12],inv[13],inv[14],inv[15]}));
+    }
+
+    Matrix Matrix::transpose() const
+    {
+        return Matrix({
+            data[0], data[4], data[8], data[12],
+            data[1], data[5], data[9], data[13],
+            data[2], data[6], data[10], data[14],
+            data[3], data[7], data[11], data[15],
+        });
+    }
+
+    bool isEqual(const Matrix& m1, const Matrix& m2, const float precision)
+    {
+        for(size_t i = 0; i < 16; ++i)
+        {
+            float diff = std::abs(m2(i) - m1(i));
+            if(diff > precision)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    Matrix inverse(const Matrix& m)
+    {
+        return m.inverse();
+    }
+
+    Matrix transpose(const Matrix& m)
+    {
+        return m.transpose();
+    }
+
     // (m11 m12 m13 m14)   (v1)    (v1*m11 + v2*m12 + v3*m13 + 0*m14)
     // (m21 m22 m23 m24) * (v2) =  (v1*m21 + v2*m22 + v3*m23 + 0*m24)
     // (m31 m32 m33 m34)   (v3)    (v1*m31 + v2*m32 + v3*m33 + 0*m34)
@@ -90,11 +254,21 @@ namespace geometry
     // (m31 m32 m33 m34)   (p3)    (p1*m31 + p2*m32 + p3*m33 + 1*m34)
     // ( 0   0   0   1)    (1 )    (                1               )
     Point operator*(const Matrix& m, const Point& p) {
-        return Point({
-            p[Axis::X]*m[Axis::X][Axis::X] + p[Axis::Y]*m[Axis::X][Axis::Y] + p[Axis::Z]*m[Axis::X][Axis::Z] + m[Axis::X][Axis::W],
-            p[Axis::X]*m[Axis::Y][Axis::X] + p[Axis::Y]*m[Axis::Y][Axis::Y] + p[Axis::Z]*m[Axis::Y][Axis::Z] + m[Axis::Y][Axis::W],
-            p[Axis::X]*m[Axis::Z][Axis::X] + p[Axis::Y]*m[Axis::Z][Axis::Y] + p[Axis::Z]*m[Axis::Z][Axis::Z] + m[Axis::Z][Axis::W]
+
+        // TODO: w is only needed for perspective projection, not needed for rigid body & affine transformations
+        float w = p[Axis::X]*m(Matrix::WX) + p[Axis::Y]*m(Matrix::WY) + p[Axis::Z]*m(Matrix::WZ) + m(Matrix::WW);
+        auto result = Point({
+            p[Axis::X]*m(Matrix::XX) + p[Axis::Y]*m(Matrix::XY) + p[Axis::Z]*m(Matrix::XZ) + m(Matrix::XW),
+            p[Axis::X]*m(Matrix::YX) + p[Axis::Y]*m(Matrix::YY) + p[Axis::Z]*m(Matrix::YZ) + m(Matrix::YW),
+            p[Axis::X]*m(Matrix::ZX) + p[Axis::Y]*m(Matrix::ZY) + p[Axis::Z]*m(Matrix::ZZ) + m(Matrix::ZW)
         });
+
+        if(std::abs(w) > 1E-06)
+        {
+            result /= w;
+        }
+
+        return result;
     }
 
     Matrix operator*(const Matrix& m1, const Matrix& m2)
@@ -164,6 +338,27 @@ namespace geometry
             0.0, 0.0, 0.0, 1
         });
     }
-    
+
+    Matrix orthographicProjection(float left, float right, float top, float bottom, float N, float F)
+    {
+        return geometry::Matrix({
+            2 / (right - left), 0, 0, -(right + left) / (right - left),
+            0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom),
+            0, 0, -2 / (F - N), (F + N) / (F - N),
+            0, 0, 0, 1
+        });
+    }
+
+    Matrix perspectiveTransformation(float N, float F)
+    {
+        float a = -(F+N) / (F-N);
+        float b = -(2*F*N)/(F-N);
+        return geometry::Matrix({
+            N, 0, 0, 1,
+            0, N, 0, 1,
+            0, 0, a, b,
+            0, 0, -1, 0
+        });
+    }
 
 } // namespace geometry

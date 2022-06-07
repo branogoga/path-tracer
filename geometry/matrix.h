@@ -35,6 +35,9 @@ namespace geometry {
         const float& operator()(size_t index) const;
         float& operator()(size_t row, size_t col);
         const float& operator()(size_t row, size_t col) const;
+
+        Matrix inverse() const;
+        Matrix transpose() const;
     private:
         void initRows();
 
@@ -46,9 +49,24 @@ namespace geometry {
     Point operator*(const Matrix& m, const Point& p);
     Matrix operator*(const Matrix& m1, const Matrix& m2);
 
+    bool isEqual(const Matrix& m1, const Matrix& m2, const float precision = 1E-06);
+
+    Matrix inverse(const Matrix& m);
+    Matrix transpose(const Matrix& m);
+
+    // TODO: ortographicProjection, perspectiveProjection
+    // TODO: gramSchmidtOrthogonalization
+    // TODO: determinant
+    // TODO: isOrthogonal
+    // TODO: isRightHanded
+    // TODO: trace
+    // TODO: ZeroMatrix, IdentityMatrix
+
     Matrix translation(float x, float y, float z);
     Matrix scaling(float x, float y, float z);
     Matrix rotationX(float angleInRadians);
     Matrix rotationY(float angleInRadians);
     Matrix rotationZ(float angleInRadians);
+    Matrix orthographicProjection(float left, float right, float top, float bottom, float N, float F);
+    Matrix perspectiveTransformation(float N, float F);
 } //namespace geometry

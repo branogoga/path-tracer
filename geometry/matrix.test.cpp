@@ -96,6 +96,15 @@ TEST(Matrix, create_from_points) {
     EXPECT_FLOAT_EQ(0.0, m(Matrix::WY));
     EXPECT_FLOAT_EQ(0.0, m(Matrix::WZ));
     EXPECT_FLOAT_EQ(1.0, m(Matrix::WW));
+
+    for(size_t row = 0; row < 4; ++row)
+    {
+        for(size_t col = 0; col < 4; ++col)
+        {
+            EXPECT_FLOAT_EQ(m[row][col], m(row, col));
+            EXPECT_FLOAT_EQ(m[row][col], m(4*row+col));
+        }
+    }
 }
 
 TEST(Matrix, multiply_matrix_vector) {
@@ -242,4 +251,192 @@ TEST(Matrix, rotationZ) {
     EXPECT_FLOAT_EQ(0.0f, z[Axis::X]);
     EXPECT_FLOAT_EQ(0.0f, z[Axis::Y]);
     EXPECT_FLOAT_EQ(1.0f, z[Axis::Z]);
+}
+
+TEST(Matrix, inverseTranslation)
+{
+    EXPECT_TRUE(isEqual(translation(-10.0, -20.0, -30.0), inverse(translation(10.0, 20.0, 30.0))));
+}
+
+TEST(Matrix, inverseScaling)
+{
+    EXPECT_TRUE(isEqual(scaling(1/10.0, 1/20.0, 1/30.0), inverse(scaling(10.0, 20.0, 30.0))));
+}
+
+TEST(Matrix, inverseRotationX)
+{
+    EXPECT_TRUE(isEqual(rotationX(M_PI/2), inverse(rotationX(-M_PI/2))));
+}
+
+TEST(Matrix, inverseRotationY)
+{
+    EXPECT_TRUE(isEqual(rotationY(M_PI/2), inverse(rotationY(-M_PI/2))));
+}
+
+TEST(Matrix, inverseRotationZ)
+{
+    EXPECT_TRUE(isEqual(rotationZ(M_PI/2), inverse(rotationZ(-M_PI/2))));
+}
+
+TEST(Matrix, transpose)
+{
+    auto m = Matrix(
+            Point({1.0f, 2.0f, 3.0f}),
+            Point({4.0f, 5.0f, 6.0f}),
+            Point({7.0f, 8.0f, 9.0f}),
+            Point({10.0f, 11.0f, 12.0f})
+    );
+
+    auto transposed = transpose(m);
+
+    for(size_t row = 0; row < 4; ++row)
+    {
+        for(size_t col = 0; col < 4; ++col)
+        {
+            EXPECT_FLOAT_EQ(m[row][col], transposed[col][row]);
+        }
+    }
+}
+
+TEST(Matrix, orthographicProjectionProjectsPointToCanonicalVolumeIdentity)
+{
+    float left = -1.0f;
+    float right = +1.0f;
+    float top = +1.0f;
+    float bottom = -1.0f;
+    float N = -1.0f;
+    float F = 1.0f;
+
+    auto worldToNormalizedScreenCoordinatesMatrix = geometry::orthographicProjection(left, right, top, bottom, N, F);
+
+    auto near_left_bottom = worldToNormalizedScreenCoordinatesMatrix * Point({left, bottom, N});
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(+1.0f, near_left_bottom[Axis::Z]);
+
+    auto near_center = worldToNormalizedScreenCoordinatesMatrix * Point({0.0, 0.0, N});
+    EXPECT_NEAR(0.0f, near_center[Axis::X], 1E-06);
+    EXPECT_NEAR(0.0f, near_center[Axis::Y], 1E-06);
+    EXPECT_FLOAT_EQ(+1.0f, near_center[Axis::Z]);
+
+    auto near_right_top = worldToNormalizedScreenCoordinatesMatrix * Point({right, top, N});
+    EXPECT_NEAR(+1.0f, near_right_top[Axis::X], 1E-06);
+    EXPECT_NEAR(+1.0f, near_right_top[Axis::Y], 1E-06);
+    EXPECT_FLOAT_EQ(+1.0f, near_right_top[Axis::Z]);
+
+    auto far_left_bottom = worldToNormalizedScreenCoordinatesMatrix * Point({left, bottom, F});
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::Z]);
+}
+
+TEST(Matrix, projectsPointToCanonicalVolumeScaling)
+{
+    float left = -2.0f;
+    float right = +2.0f;
+    float top = +3.0f;
+    float bottom = -3.0f;
+    float N = -4.0f;
+    float F = 4.0f;
+
+    auto worldToNormalizedScreenCoordinatesMatrix = geometry::orthographicProjection(left, right, top, bottom, N, F);
+
+    auto near_left_bottom = worldToNormalizedScreenCoordinatesMatrix * Point({left, bottom, N});
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(+1.0f, near_left_bottom[Axis::Z]);
+
+    auto near_center = worldToNormalizedScreenCoordinatesMatrix * Point({0.0, 0.0, N});
+    EXPECT_NEAR(0.0f, near_center[Axis::X], 1E-06);
+    EXPECT_NEAR(0.0f, near_center[Axis::Y], 1E-06);
+    EXPECT_FLOAT_EQ(+1.0f, near_center[Axis::Z]);
+
+    auto near_right_top = worldToNormalizedScreenCoordinatesMatrix * Point({right, top, N});
+    EXPECT_NEAR(+1.0f, near_right_top[Axis::X], 1E-06);
+    EXPECT_NEAR(+1.0f, near_right_top[Axis::Y], 1E-06);
+    EXPECT_FLOAT_EQ(+1.0f, near_right_top[Axis::Z]);
+
+    auto far_left_bottom = worldToNormalizedScreenCoordinatesMatrix * Point({left, bottom, F});
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::Z]);
+}
+
+TEST(Matrix, projectsPointToCanonicalVolumeTranslation)
+{
+    float left =-3.0f;
+    float right = +5.0f;
+    float top = +7.0f;
+    float bottom = +3.0f;
+    float N = -10.0f;
+    float F = -20.0f;
+
+    auto worldToNormalizedScreenCoordinatesMatrix = geometry::orthographicProjection(left, right, top, bottom, N, F);
+
+    auto near_left_bottom = worldToNormalizedScreenCoordinatesMatrix * Point({left, bottom, N});
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(-1.0f, near_left_bottom[Axis::Z]);
+
+    auto near_center = worldToNormalizedScreenCoordinatesMatrix * Point({1.0, 5.0, (N+F)/2});
+    EXPECT_NEAR(0.0f, near_center[Axis::X], 1E-06);
+    EXPECT_NEAR(0.0f, near_center[Axis::Y], 1E-06);
+    EXPECT_FLOAT_EQ(0.0f, near_center[Axis::Z]);
+
+    auto near_right_top = worldToNormalizedScreenCoordinatesMatrix * Point({right, top, N});
+    EXPECT_NEAR(+1.0f, near_right_top[Axis::X], 1E-06);
+    EXPECT_NEAR(+1.0f, near_right_top[Axis::Y], 1E-06);
+    EXPECT_FLOAT_EQ(-1.0f, near_right_top[Axis::Z]);
+
+    auto far_left_bottom = worldToNormalizedScreenCoordinatesMatrix * Point({left, bottom, F});
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(-1.0f, far_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(+1.0f, far_left_bottom[Axis::Z]);
+}
+
+TEST(Matrix, projectsCanonicalVolumeTo) {
+    float left = -3.0f;
+    float right = +5.0f;
+    float top = +7.0f;
+    float bottom = +3.0f;
+    float N = -10.0f;
+    float F = -20.0f;
+
+    auto normalizedScreenToWorldCoordinatesMatrix = geometry::inverse(geometry::orthographicProjection(left, right, top, bottom, N, F));
+
+    auto near_left_bottom = normalizedScreenToWorldCoordinatesMatrix * Point({-1.0, -1.0, -1.0});
+    EXPECT_FLOAT_EQ(left, near_left_bottom[Axis::X]);
+    EXPECT_FLOAT_EQ(bottom, near_left_bottom[Axis::Y]);
+    EXPECT_FLOAT_EQ(N, near_left_bottom[Axis::Z]);
+
+    auto far_top_right = normalizedScreenToWorldCoordinatesMatrix * Point({+1.0, +1.0, +1.0});
+    EXPECT_FLOAT_EQ(right, far_top_right[Axis::X]);
+    EXPECT_FLOAT_EQ(top, far_top_right[Axis::Y]);
+    EXPECT_FLOAT_EQ(F, far_top_right[Axis::Z]);
+}
+
+TEST(Matrix, perspectiveTransformation)
+{
+    float N = 1;
+    float F = 100;
+
+    // a = -101/99
+    // b = -200/99
+    // pseudodepth = (101*Pz+200)/(99*Pz)
+    auto m = geometry::perspectiveTransformation(N, F);
+
+    auto near = m * Point({0.0, 0.0, -1.0});
+    EXPECT_NEAR(-1.0f, near[Axis::Z], 1E-06);
+
+    auto f1 = m * Point({0.0, 0.0, -97});
+    EXPECT_FLOAT_EQ(+.9993752f, f1[Axis::Z]);
+
+    auto f2 = m * Point({0.0, 0.0, -98});
+    EXPECT_FLOAT_EQ(+.9995877f, f2[Axis::Z]);
+
+    auto f3 = m * Point({0.0, 0.0, -99});
+    EXPECT_FLOAT_EQ(+.9997959, f3[Axis::Z]);
+
+    auto f4 = m * Point({0.0, 0.0, -F});
+    EXPECT_FLOAT_EQ(+1.0f, f4[Axis::Z]);
 }
