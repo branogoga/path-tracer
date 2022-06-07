@@ -8,6 +8,8 @@ class Camera
 public:
     Camera(float left, float right, float top, float bottom, float N, float F);
 
+    // TODO: Camera transformation - position + rotation
+
     geometry::Matrix    getWorldToNormalizedScreenTransformation() const;
     geometry::Matrix    getNormalizedScreenToWorldTransformation() const;
 private:

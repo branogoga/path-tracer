@@ -21,6 +21,9 @@ set(
     geometry/point.h
     geometry/point.cpp
     geometry/point.test.cpp
+    geometry/ray.cpp
+    geometry/ray.h
+    geometry/ray.test.cpp
     geometry/vector.h
     geometry/vector.cpp
     geometry/vector.test.cpp
@@ -41,6 +44,15 @@ set(
     scene/camera.h
     scene/camera.cpp
     scene/camera.test.cpp
+    scene/color.h
+    scene/color.cpp
+    scene/color.test.cpp
+    scene/material.h
+    scene/material.cpp
+    scene/material.test.cpp
+    scene/sphere.h
+    scene/sphere.cpp
+    scene/sphere.test.cpp
 )
 
 set(

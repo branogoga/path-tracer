@@ -1,31 +1,48 @@
 #include "image/image.h"
 #include "image/io/png.h"
+#include "geometry/point.h"
+#include "scene/sphere.h"
+#include "scene/color.h"
+#include "geometry/ray.h"
 
-#include <array>
 #include <iostream>
 
 int main(int /*argc*/, char **/*argv[]*/)
 {
-    std::cout << "Hello World!";
+    std::cout << "Hello World!" << std::endl;
 
-    const auto colorBackground = std::array<unsigned char, 4>({25, 25, 25, 255});
-    const auto colorObject = std::array<unsigned char, 4>({255, 128, 128, 255});
+    const auto colorBackground = Color({0.1, 0.1, 0.1, 1.0});
+    const auto colorObject = Color({1.0, 0.1, 0.1, 1.0});
+
+    const std::vector<Sphere> objects = { Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f)};
 
     auto image = Image(100, 100);
-    const auto halfWidth = image.getWidth()/ 2;
-    const auto halfHeight = image.getHeight()/ 2;
-    const auto radius = std::min(halfWidth, halfHeight);
-    const auto radiusSqr = radius*radius;
     for(size_t row = 0; row < image.getHeight(); ++row) {
         for(size_t column = 0; column < image.getWidth(); ++column) {
-            const auto xDiff = column - halfWidth;
-            const auto yDiff = row - halfHeight;
-            const auto distanceSqr = xDiff*xDiff + yDiff*yDiff;
-            if(distanceSqr < radiusSqr) {
-                image.setPixel(row, column, colorObject);
-            } else {
-                image.setPixel(row, column, colorBackground);
+
+            // Cast ray from Camera origin [0, 0, 0] through the viewport [-1, -1] - [+1, +1] in plane z=-1
+            geometry::Point cameraOrigin({0.0, 0.0, 0.0});
+            // TODO: Center of pixel?
+            geometry::Point pixel({2*((float)column/image.getWidth())-1.0f, 2*((float)row/image.getHeight())-1.0f, -1.0f});
+            geometry::Ray ray = geometry::Ray(cameraOrigin, pixel);
+
+            auto color = colorBackground;
+            for(auto object : objects)
+            {
+                if(intersect(ray, object))
+                {
+                    color = colorObject;
+                }
             }
+            image.setPixel(
+                row, column,
+                {
+                    static_cast<unsigned char>(color[Color::R]*255),
+                    static_cast<unsigned char>(color[Color::G]*255),
+                    static_cast<unsigned char>(color[Color::B]*255),
+                    static_cast<unsigned char>(color[Color::A]*255)
+                }
+            );
         }
     }
 
