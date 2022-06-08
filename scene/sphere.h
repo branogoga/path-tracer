@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "../geometry/point.h"
 #include "../geometry/ray.h"
 
@@ -15,4 +16,6 @@ private:
     float radius;
 };
 
-bool intersect(const geometry::Ray& ray, const Sphere& sphere);
+bool hasIntersection(const geometry::Ray& ray, const Sphere& sphere);
+std::vector<float> getAllIntersections(const geometry::Ray& ray, const Sphere& sphere);
+geometry::Vector getNormal(const geometry::Point& point, const Sphere& sphere);

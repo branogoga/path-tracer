@@ -1,25 +1,34 @@
 #include "plane.h"
 
 #include "gtest/gtest.h"
+#include "../geometry/axis.h"
 
-TEST(Plane, intersect)
+using namespace geometry;
+
+TEST(Plane, hasIntersection)
 {
-    auto ray = geometry::Ray(geometry::Point({0.0f, 0.0f, 0.0f}), geometry::Vector({0.0f, -1.0f, -1.0f}));
-    auto plane = Plane(geometry::Vector({0.0, 1.0, 0.0}), -1.0f);
-    EXPECT_TRUE(intersect(ray, plane));
+    auto ray = Ray(Point({0.0f, 0.0f, 0.0f}), Vector({0.0f, -1.0f, -1.0f}));
+    auto plane = Plane(Vector({0.0, 1.0, 0.0}), -1.0f);
+    EXPECT_TRUE(hasIntersection(ray, plane));
 }
 
-TEST(Plane, intersect_behind)
+TEST(Plane, hasIntersection_intersect_behind)
 {
-    auto ray = geometry::Ray(geometry::Point({0.0f, 0.0f, 0.0f}), geometry::Vector({0.0f, +1.0f, -1.0f}));
-    auto plane = Plane(geometry::Vector({0.0, 1.0, 0.0}), -1.0f);
-    EXPECT_FALSE(intersect(ray, plane));
+    auto ray = Ray(Point({0.0f, 0.0f, 0.0f}), Vector({0.0f, +1.0f, -1.0f}));
+    auto plane = Plane(Vector({0.0, 1.0, 0.0}), -1.0f);
+    EXPECT_FALSE(hasIntersection(ray, plane));
 }
 
-TEST(Plane, no_intersect)
+TEST(Plane, hasIntersection_no_intersect)
 {
-    auto ray = geometry::Ray(geometry::Point({0.0f, 0.0f, 0.0f}), geometry::Vector({0.0f, 0.0f, -1.0f}));
-    auto plane = Plane(geometry::Vector({0.0, 1.0, 0.0}), -1.0f);
-    EXPECT_FALSE(intersect(ray, plane));
+    auto ray = Ray(Point({0.0f, 0.0f, 0.0f}), Vector({0.0f, 0.0f, -1.0f}));
+    auto plane = Plane(Vector({0.0, 1.0, 0.0}), -1.0f);
+    EXPECT_FALSE(hasIntersection(ray, plane));
 }
 
+TEST(Plane, normal)
+{
+    auto plane = Plane(Vector({0.0, 1.0, 0.0}), -1.0f);
+    auto normal = getNormal(Point(), plane);
+    EXPECT_FLOAT_EQ(normal[Axis::X], normal[Axis::X]);
+}

@@ -15,13 +15,18 @@ float Plane::getOffset() const
     return d;
 }
 
-bool intersect(const geometry::Ray& ray, const Plane& plane)
+bool hasIntersection(const geometry::Ray& ray, const Plane& plane)
+{
+    return !getAllIntersections(ray, plane).empty();
+}
+
+std::vector<float> getAllIntersections(const geometry::Ray& ray, const Plane& plane)
 {
     float precision = 1E-06;
     float denominator = dot(plane.getNormal(), ray.getDirection());
     if(std::abs(denominator) < precision)
     {
-        return false;
+        return {};
     }
     float t = (plane.getOffset() - dot(plane.getNormal(), ray.getOrigin() - geometry::Point({0.0, 0.0, 0.0}))) / denominator;
 
@@ -29,5 +34,17 @@ bool intersect(const geometry::Ray& ray, const Plane& plane)
 //                 "and plane(n="<<plane.getNormal()<<", d=" << plane.getOffset() << ") is t=" << t
 //                 << std::endl;
 
-    return t > 0;
+    // Only positive intersections (= in-front of camera)?
+    if(t > precision) {
+        return {t};
+    } else {
+        return {};
+    }
 }
+
+geometry::Vector getNormal(const geometry::Point&, const Plane& plane)
+{
+    return plane.getNormal();
+}
+
+

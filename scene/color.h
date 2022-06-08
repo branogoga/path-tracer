@@ -20,6 +20,10 @@ private:
     std::array<float, 4>    data;
 };
 
+Color operator*(const Color& c, float k);
+Color operator*(float k, const Color& c);
+Color operator+(const Color& c1, const Color& c2);
+
 namespace Colors
 {
     const Color White(1.0f, 1.0f, 1.0f, 1.0f);

@@ -40,10 +40,10 @@ set(
 )
 
 set(
-        MATH_SOURCES
-        math/quadratic_solver.cpp
-        math/quadratic_solver.h
-        math/quadratic_solver.test.cpp
+    MATH_SOURCES
+    math/quadratic_solver.cpp
+    math/quadratic_solver.h
+    math/quadratic_solver.test.cpp
 )
 
 set(
@@ -63,11 +63,13 @@ set(
     scene/sphere.h
     scene/sphere.cpp
     scene/sphere.test.cpp
-)
+        scene/intersection.h)
 
 set(
-        UTILS_SOURCES
-        utils/timer.cpp utils/timer.h)
+    UTILS_SOURCES
+    utils/timer.cpp
+    utils/timer.h
+)
 
 set(
     SOURCES

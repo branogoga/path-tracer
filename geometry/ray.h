@@ -11,6 +11,8 @@ namespace geometry
         Ray(const geometry::Point& origin, const geometry::Vector& direction);
         Ray(const geometry::Point& origin, const geometry::Point& anotherPoint);
 
+        geometry::Point operator()(float t) const;
+
         const geometry::Point& getOrigin() const;
         const geometry::Vector& getDirection() const;
     private:
