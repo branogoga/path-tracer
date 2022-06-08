@@ -5,12 +5,11 @@
 #include "scene/color.h"
 #include "geometry/ray.h"
 #include "scene/plane.h"
-
-#include <iostream>
+#include "utils/timer.h"
 
 int main(int /*argc*/, char **/*argv[]*/)
 {
-    std::cout << "Hello World!" << std::endl;
+    Timer timer("Calculation of ray-traced scene took ");
 
     const auto colorBackground = Colors::SkyBlue;
     const auto colorObject = Colors::Red;
@@ -22,7 +21,7 @@ int main(int /*argc*/, char **/*argv[]*/)
             Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f),
     };
 
-    auto image = Image(100, 100);
+    auto image = Image(512, 512);
     for(size_t row = 0; row < image.getHeight(); ++row) {
         for(size_t column = 0; column < image.getWidth(); ++column) {
 

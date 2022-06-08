@@ -41,7 +41,10 @@ set(
 
 set(
         MATH_SOURCES
-        math/quadratic_solver.cpp math/quadratic_solver.h math/quadratic_solver.test.cpp)
+        math/quadratic_solver.cpp
+        math/quadratic_solver.h
+        math/quadratic_solver.test.cpp
+)
 
 set(
     SCENE_SOURCES
@@ -54,10 +57,17 @@ set(
     scene/material.h
     scene/material.cpp
     scene/material.test.cpp
+    scene/plane.cpp
+    scene/plane.h
+    scene/plane.test.cpp
     scene/sphere.h
     scene/sphere.cpp
     scene/sphere.test.cpp
-        scene/plane.cpp scene/plane.h scene/plane.test.cpp)
+)
+
+set(
+        UTILS_SOURCES
+        utils/timer.cpp utils/timer.h)
 
 set(
     SOURCES
@@ -65,6 +75,7 @@ set(
     ${IMAGE_SOURCES}
     ${MATH_SOURCES}
     ${SCENE_SOURCES}
+    ${UTILS_SOURCES}
 )
 
 add_executable(PathTracer main.cpp ${SOURCES})
