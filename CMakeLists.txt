@@ -57,7 +57,7 @@ set(
     scene/sphere.h
     scene/sphere.cpp
     scene/sphere.test.cpp
-)
+        scene/plane.cpp scene/plane.h scene/plane.test.cpp)
 
 set(
     SOURCES

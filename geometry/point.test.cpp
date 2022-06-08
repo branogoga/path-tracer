@@ -103,4 +103,9 @@ TEST(Point, scaling)
     EXPECT_EQ(30.0f, v3[Axis::Z]);
 }
 
-
+TEST(Point, ostream) {
+    auto v = Point({1.0f, 2.5f, -3.123f});
+    std::ostringstream out;
+    out << v;
+    EXPECT_EQ(std::string("[1, 2.5, -3.123]"), out.str());
+}

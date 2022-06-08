@@ -35,3 +35,5 @@ namespace geometry {
     bool isEqual(const Point& v1, const Point& v2, const float precision = 1E-06);
 
 } //namespace geometry
+
+std::ostream& operator<<(std::ostream& out, const geometry::Point& p);

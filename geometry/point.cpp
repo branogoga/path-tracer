@@ -90,3 +90,9 @@ namespace geometry {
     }
 
 }//namespace geometry
+
+std::ostream& operator<<(std::ostream& out, const geometry::Point& p)
+{
+    out << "[" << p[geometry::Axis::X] << ", " <<  p[geometry::Axis::Y] << ", " << p[geometry::Axis::Z] <<"]";
+    return out;
+}

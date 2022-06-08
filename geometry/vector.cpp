@@ -1,4 +1,5 @@
 #include "vector.h"
+#include "axis.h"
 
 #include <cmath>
 
@@ -134,3 +135,9 @@ namespace geometry {
     }
 
 } //namespace geometry
+
+std::ostream& operator<<(std::ostream& out, const geometry::Vector& v)
+{
+    out << "[" << v[geometry::Axis::X] << ", " <<  v[geometry::Axis::Y] << ", " << v[geometry::Axis::Z] <<"]";
+    return out;
+}

@@ -1,6 +1,5 @@
 #include "sphere.h"
 
-#include "../geometry/axis.h"
 #include "../math/quadratic_solver.h"
 
 Sphere::Sphere(const geometry::Point& origin, const float radius) : origin(origin), radius(radius)

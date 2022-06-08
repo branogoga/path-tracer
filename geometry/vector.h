@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <ostream>
 
 namespace geometry {
 
@@ -45,3 +46,5 @@ namespace geometry {
     float angle(const Vector& v1, const Vector& v2);
 
 } //namespace geometry
+
+std::ostream& operator<<(std::ostream& out, const geometry::Vector& v);

@@ -4,6 +4,7 @@
 #include "scene/sphere.h"
 #include "scene/color.h"
 #include "geometry/ray.h"
+#include "scene/plane.h"
 
 #include <iostream>
 
@@ -11,10 +12,15 @@ int main(int /*argc*/, char **/*argv[]*/)
 {
     std::cout << "Hello World!" << std::endl;
 
-    const auto colorBackground = Color({0.1, 0.1, 0.1, 1.0});
-    const auto colorObject = Color({1.0, 0.1, 0.1, 1.0});
+    const auto colorBackground = Colors::SkyBlue;
+    const auto colorObject = Colors::Red;
+    const auto colorGround = Colors::GrassGreen;
 
-    const std::vector<Sphere> objects = { Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f)};
+    const auto ground = Plane(geometry::Vector({0.0f, 1.0f, 0.0f}), +1.0);
+
+    const std::vector<Sphere> objects = {
+            Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f),
+    };
 
     auto image = Image(100, 100);
     for(size_t row = 0; row < image.getHeight(); ++row) {
@@ -27,6 +33,10 @@ int main(int /*argc*/, char **/*argv[]*/)
             geometry::Ray ray = geometry::Ray(cameraOrigin, pixel);
 
             auto color = colorBackground;
+            if(intersect(ray, ground))
+            {
+                color = colorGround;
+            }
             for(auto object : objects)
             {
                 if(intersect(ray, object))
