@@ -1,7 +1,7 @@
 # Path Tracer
 Modern path-tracer.
 
-[Default scene ray-traced and shaded using diffuse shading model](README.png)
+![Default scene ray-traced and shaded using diffuse shading model](README.png)
 
 ## How to run
 
