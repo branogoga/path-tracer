@@ -1,6 +1,7 @@
 #include "sphere.h"
 
 #include "../geometry/axis.h"
+#include "../math/quadratic_solver.h"
 
 Sphere::Sphere(const geometry::Point& origin, const float radius) : origin(origin), radius(radius)
 {
@@ -25,13 +26,5 @@ bool intersect(const geometry::Ray& ray, const Sphere& sphere)
     float b = 2*dot(d,L);
     float c = dot(L,L) - r*r;
 
-    float D = b*b - 4*a*c;
-    if (D >= 0.0)
-    {
-        return true; // one or two real roots
-    }
-    else
-    {
-        return false; // no real roots
-    }
+    return QuadraticEquation(a, b, c).hasRoot();
 }

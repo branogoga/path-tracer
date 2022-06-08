@@ -40,6 +40,10 @@ set(
 )
 
 set(
+        MATH_SOURCES
+        math/quadratic_solver.cpp math/quadratic_solver.h math/quadratic_solver.test.cpp)
+
+set(
     SCENE_SOURCES
     scene/camera.h
     scene/camera.cpp
@@ -59,6 +63,7 @@ set(
     SOURCES
     ${GEOMETRY_SOURCES}
     ${IMAGE_SOURCES}
+    ${MATH_SOURCES}
     ${SCENE_SOURCES}
 )
 
