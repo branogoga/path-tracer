@@ -12,14 +12,14 @@ Color shading(
         const geometry::Vector& surfaceNormal,
         const geometry::Point& /*cameraOrigin*/,
         const geometry::Point& lightOrigin,// TODO: Infinite light sources like "sky"
-        const Color& /*lightColor*/,
+        const Color& lightColor,// TODO: Multiple light sources
         const Color& materialColor,
         const float materialDiffusivity
         )
 {
     auto s = normalize(intersectionPoint - lightOrigin);
     auto n = normalize(surfaceNormal);// TODO: require normalized, reduce duplication
-    return materialColor * materialDiffusivity * std::max(dot(s, n), 0.0f);
+    return materialColor * lightColor * materialDiffusivity * std::max(dot(s, n), 0.0f);
 }
 
 int main(int /*argc*/, char **/*argv[]*/)
@@ -70,6 +70,7 @@ int main(int /*argc*/, char **/*argv[]*/)
                     auto surfaceNormal = getNormal(intersectionPoint, object);
 
                     const float diffusivity = 1.0;
+                    // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
                     color = shading(
                         intersectionPoint, surfaceNormal, cameraOrigin,
                         lightOrigin, lightColor, colorObject, diffusivity

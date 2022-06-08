@@ -22,6 +22,7 @@ private:
 
 Color operator*(const Color& c, float k);
 Color operator*(float k, const Color& c);
+Color operator*(const Color& c1, const Color& c2);
 Color operator+(const Color& c1, const Color& c2);
 
 namespace Colors
