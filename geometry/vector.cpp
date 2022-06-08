@@ -91,6 +91,11 @@ namespace geometry {
         return lhs;
     }
 
+    Vector operator-(Vector lhs, const Vector& rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
+
     Vector operator*(float scale, Vector vector) {
         vector *= scale;
         return vector;

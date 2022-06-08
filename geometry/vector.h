@@ -33,7 +33,8 @@ namespace geometry {
         std::array<float, 3> data;
     };
 
-    Vector operator+(Vector rhs, const Vector& lhs);
+    Vector operator+(Vector lhs, const Vector& rhs);
+    Vector operator-(Vector lhs, const Vector& rhs);
     Vector operator*(float scale, Vector vector);
     Vector operator*(Vector vector, float scale);
     bool isEqual(const Vector& v1, const Vector& v2, const float precision = 1E-06);
