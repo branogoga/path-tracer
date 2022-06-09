@@ -15,10 +15,10 @@ Color shading(
         const geometry::Point& lightOrigin,// TODO: Infinite light sources like "sky"
         const Color& lightColor,// TODO: Multiple light sources
         const Color& materialColor,
-        const float materialDiffusivity,
-        const float materialReflectivity,
+        const Color& materialDiffusivity,
+        const Color& materialReflectivity,
         const float materialReflectiveExponent,
-        const float ambientLightCoeficient
+        const Color& ambientLightCoeficient
         )
 {
     auto s = normalize(intersectionPoint - lightOrigin);
@@ -26,7 +26,11 @@ Color shading(
     auto r = 2 * dot(s, n) / dot(n, n) * n - s;// Reflected-direction
     const float lambert = std::max(dot(s, n), 0.0f);
     const float phong = std::pow(std::max(dot(r, n), 0.0f), materialReflectiveExponent);
-    return materialColor * lightColor * std::min(ambientLightCoeficient + materialDiffusivity * lambert + materialReflectivity * phong, 1.0f);
+    auto lightingCoefficient = ambientLightCoeficient + materialDiffusivity * lambert + materialReflectivity * phong;
+    lightingCoefficient[Color::R]=std::min(lightingCoefficient[Color::R], 1.0f);
+    lightingCoefficient[Color::G]=std::min(lightingCoefficient[Color::G], 1.0f);
+    lightingCoefficient[Color::B]=std::min(lightingCoefficient[Color::B], 1.0f);
+    return materialColor * lightColor * lightingCoefficient;
 }
 
 int main(int /*argc*/, char **/*argv[]*/)
@@ -76,15 +80,15 @@ int main(int /*argc*/, char **/*argv[]*/)
                     auto intersectionPoint = ray(closestIntersection);
                     auto surfaceNormal = getNormal(intersectionPoint, object);
 
-                    const float ambientLightCoeficient = 0.00f;
-                    const float materialReflectivity = 0.75;
+                    const Color ambientLightCoefficient(0.00f, 0.0f, 0.0f);
+                    const Color diffusivity(0.75, 0.75, 0.75);
+                    const Color materialReflectivity(0.75, 0.75, 0.75);
                     const float materialReflectiveExponent = 25.0;
-                    const float diffusivity = 0.75;
                     // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
                     color = shading(
                         intersectionPoint, surfaceNormal, cameraOrigin,
                         lightOrigin, lightColor, colorObject,
-                        diffusivity, materialReflectivity, materialReflectiveExponent, ambientLightCoeficient
+                        diffusivity, materialReflectivity, materialReflectiveExponent, ambientLightCoefficient
                     );
                 }
             }
