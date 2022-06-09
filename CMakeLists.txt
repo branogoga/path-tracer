@@ -63,7 +63,7 @@ set(
     scene/sphere.h
     scene/sphere.cpp
     scene/sphere.test.cpp
-        scene/intersection.h)
+)
 
 set(
     UTILS_SOURCES

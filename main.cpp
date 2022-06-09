@@ -7,39 +7,15 @@
 #include "geometry/ray.h"
 #include "scene/plane.h"
 #include "utils/timer.h"
-
-Color shading(
-        const geometry::Point& intersectionPoint,
-        const geometry::Vector& surfaceNormal,
-        const geometry::Point& /*cameraOrigin*/,
-        const geometry::Point& lightOrigin,// TODO: Infinite light sources like "sky"
-        const Color& lightColor,// TODO: Multiple light sources
-        const Color& materialColor,
-        const Color& materialDiffusivity,
-        const Color& materialReflectivity,
-        const float materialReflectiveExponent,
-        const Color& ambientLightCoeficient
-        )
-{
-    auto s = normalize(intersectionPoint - lightOrigin);
-    auto n = normalize(surfaceNormal);// TODO: require normalized, reduce duplication
-    auto r = 2 * dot(s, n) / dot(n, n) * n - s;// Reflected-direction
-    const float lambert = std::max(dot(s, n), 0.0f);
-    const float phong = std::pow(std::max(dot(r, n), 0.0f), materialReflectiveExponent);
-    auto lightingCoefficient = ambientLightCoeficient + materialDiffusivity * lambert + materialReflectivity * phong;
-    lightingCoefficient[Color::R]=std::min(lightingCoefficient[Color::R], 1.0f);
-    lightingCoefficient[Color::G]=std::min(lightingCoefficient[Color::G], 1.0f);
-    lightingCoefficient[Color::B]=std::min(lightingCoefficient[Color::B], 1.0f);
-    return materialColor * lightColor * lightingCoefficient;
-}
+#include "scene/material.h"
 
 int main(int /*argc*/, char **/*argv[]*/)
 {
     Timer timer("Calculation of ray-traced scene took ");
 
     const auto colorBackground = Colors::SkyBlue;
-    const auto colorObject = Colors::Red;
     const auto colorGround = Colors::GrassGreen;
+    const auto colorObject = Colors::Red;
 
     const auto ground = Plane(geometry::Vector({0.0f, 1.0f, 0.0f}), +1.0);
 
@@ -47,7 +23,16 @@ int main(int /*argc*/, char **/*argv[]*/)
             Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f),
     };
 
-    const geometry::Point lightOrigin({0.0, 15.0, -20.0});
+    const Color ambientLightCoefficient(0.00f, 0.0f, 0.0f);
+    const Color diffusivity(0.75, 0.75, 0.75);
+    const Color materialReflectivity(0.75, 0.75, 0.75);
+    const float materialReflectiveExponent = 25.0;
+
+    Material sphereMaterial(
+            colorObject, diffusivity, materialReflectivity, materialReflectiveExponent
+            );
+
+    const geometry::Point lightOrigin({0.0, -2.5, 0.0});
     const auto lightColor = Colors::White;
 
     auto image = Image(512, 512);
@@ -80,15 +65,10 @@ int main(int /*argc*/, char **/*argv[]*/)
                     auto intersectionPoint = ray(closestIntersection);
                     auto surfaceNormal = getNormal(intersectionPoint, object);
 
-                    const Color ambientLightCoefficient(0.00f, 0.0f, 0.0f);
-                    const Color diffusivity(0.75, 0.75, 0.75);
-                    const Color materialReflectivity(0.75, 0.75, 0.75);
-                    const float materialReflectiveExponent = 25.0;
                     // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
-                    color = shading(
+                    color = sphereMaterial.calculateLighting(
                         intersectionPoint, surfaceNormal, cameraOrigin,
-                        lightOrigin, lightColor, colorObject,
-                        diffusivity, materialReflectivity, materialReflectiveExponent, ambientLightCoefficient
+                        lightOrigin, lightColor, ambientLightCoefficient
                     );
                 }
             }
