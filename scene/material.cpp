@@ -17,7 +17,7 @@ Color   Material::calculateLighting(
 {
     auto s = normalize(lightOrigin - intersectionPoint);
     auto n = normalize(surfaceNormal);// TODO: require normalized, reduce duplication
-    auto r = 2 * dot(s, n) / dot(n, n) * n - s;// Reflected-direction
+    auto r = reflect(s, n);
     const float lambert = std::max(dot(s, n), 0.0f);
     const float phong = std::pow(std::max(dot(r, n), 0.0f), reflectionExponent);
     auto lightingCoefficient = ambientLightCoeficient + diffusivity * lambert + reflectivity * phong;

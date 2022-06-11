@@ -139,6 +139,12 @@ namespace geometry {
         return acos(dot(v1,v2) / sqrt(v1.length2() * v2.length2()));
     }
 
+    /// Reflect vector v around normal n
+    Vector reflect(const Vector& v, const Vector& n)
+    {
+        return 2 * dot(v, n) / dot(n, n) * n - v;// Reflected-direction
+    }
+
 } //namespace geometry
 
 std::ostream& operator<<(std::ostream& out, const geometry::Vector& v)

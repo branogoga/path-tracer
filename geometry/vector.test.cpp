@@ -153,6 +153,16 @@ TEST(Vector, angle) {
     EXPECT_FLOAT_EQ(M_PI, angle(Vector({1.0f, 0.0f, 0.0f}), Vector({-1.0f, 0.0f, 0.0f})));
 }
 
+TEST(Vector, reflect)
+{
+    Vector v({1.0, 1.0, 0.0});
+    Vector n({0.0, 1.0, 0.0});
+    auto r = reflect(v, n);
+    EXPECT_FLOAT_EQ(-1.0, r[Axis::X]);
+    EXPECT_FLOAT_EQ(1.0, r[Axis::Y]);
+    EXPECT_FLOAT_EQ(0.0, r[Axis::Z]);
+}
+
 TEST(Vector, ostream) {
     auto v = Vector({1.0f, 2.5f, -3.123f});
     std::ostringstream out;

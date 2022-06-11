@@ -45,6 +45,7 @@ namespace geometry {
     Vector normalize(Vector v);
     Vector cross(const Vector& v1, const Vector& v2);
     float angle(const Vector& v1, const Vector& v2);
+    Vector reflect(const Vector& v, const Vector& n);
 
 } //namespace geometry
 
