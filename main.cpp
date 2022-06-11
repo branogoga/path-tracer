@@ -15,7 +15,6 @@ int main(int /*argc*/, char **/*argv[]*/)
 
     const auto colorBackground = Colors::SkyBlue;
     const auto colorGround = Colors::GrassGreen;
-    const auto colorObject = Colors::Red;
 
     const auto ground = Plane(geometry::Vector({0.0f, 1.0f, 0.0f}), +1.0);
 
@@ -23,14 +22,7 @@ int main(int /*argc*/, char **/*argv[]*/)
             Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f),
     };
 
-    const Color ambientLightCoefficient(0.00f, 0.0f, 0.0f);
-    const Color diffusivity(0.75, 0.75, 0.75);
-    const Color materialReflectivity(0.75, 0.75, 0.75);
-    const float materialReflectiveExponent = 25.0;
-
-    Material sphereMaterial(
-            colorObject, diffusivity, materialReflectivity, materialReflectiveExponent
-            );
+    Material sphereMaterial = Materials::Bronze;
 
     const geometry::Point lightOrigin({0.0, -2.5, 0.0});
     const auto lightColor = Colors::White;
@@ -68,7 +60,7 @@ int main(int /*argc*/, char **/*argv[]*/)
                     // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
                     color = sphereMaterial.calculateLighting(
                         intersectionPoint, surfaceNormal, cameraOrigin,
-                        lightOrigin, lightColor, ambientLightCoefficient
+                        lightOrigin, lightColor
                     );
                 }
             }

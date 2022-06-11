@@ -1,8 +1,12 @@
 #include <complex>
 #include "material.h"
 
-Material::Material(Color color, Color diffusivity, Color reflectivity, float reflectionExponent)
-    : color(color), diffusivity(diffusivity), reflectivity(reflectivity), reflectionExponent(reflectionExponent)
+Material::Material(Color color, Color diffusivity, Color reflectivity, float reflectionExponent, const Color& ambientLightCoeficient)
+    : color(color)
+    , diffusivity(diffusivity)
+    , reflectivity(reflectivity)
+    , reflectionExponent(reflectionExponent)
+    , ambientLightCoeficient(ambientLightCoeficient)
 {
 }
 
@@ -11,8 +15,7 @@ Color   Material::calculateLighting(
         const geometry::Vector& surfaceNormal,
         const geometry::Point& /*cameraOrigin*/,
         const geometry::Point& lightOrigin,// TODO: Infinite light sources like "sky"
-        const Color& lightColor,// TODO: Multiple light sources
-        const Color& ambientLightCoeficient
+        const Color& lightColor // TODO: Multiple light sources
 ) const
 {
     auto s = normalize(lightOrigin - intersectionPoint);
