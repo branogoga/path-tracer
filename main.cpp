@@ -58,10 +58,13 @@ int main(int /*argc*/, char **/*argv[]*/)
                     auto surfaceNormal = getNormal(intersectionPoint, object);
 
                     // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
+                    // TODO: Cast shadow-ray to find out if the light is visible from the hit-point (or which portion of the light)
+                    // TODO: Add emitted light of the object
                     color = sphereMaterial.calculateLighting(
                         intersectionPoint, surfaceNormal, cameraOrigin,
                         lightOrigin, lightColor
                     );
+                    // TODO: Add reflected and refracted color
                 }
             }
             image.setPixel(
