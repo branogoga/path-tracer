@@ -47,25 +47,31 @@ int main(int /*argc*/, char **/*argv[]*/)
                 color = colorGround;
             }
 
-            typedef std::pair<float, std::shared_ptr<Object>> Intersection;
+            struct Intersection
+            {
+                Intersection(float t, std::shared_ptr<Object> object) : t(t), object(object) {};
+
+                float t;
+                std::shared_ptr<Object> object;
+            };
             std::vector<Intersection> intersections = {};
 
             for(auto object : objects) {
                 if (object->hasIntersection(ray)) {
                     const auto objectIntersections = object->getAllIntersections(ray);
                     for (auto intersection: objectIntersections) {
-                        intersections.emplace_back(intersection, object);
+                        intersections.emplace_back(Intersection(intersection, object));
                     }
                 }
             }
 
             if(!intersections.empty()) {
                 std::sort(intersections.begin(), intersections.end(),
-                          [](const Intersection &a, const Intersection &b) { return a.first < b.first; });
+                          [](const Intersection &a, const Intersection &b) { return a.t < b.t; });
 
                 Intersection closestIntersection = *intersections.begin();
-                const auto intersectionPoint = ray(closestIntersection.first);
-                const auto surfaceNormal = closestIntersection.second->getNormal(intersectionPoint);
+                const auto intersectionPoint = ray(closestIntersection.t);
+                const auto surfaceNormal = closestIntersection.object->getNormal(intersectionPoint);
 
                 // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
                 // TODO: Cast shadow-ray to find out if the light is visible from the hit-point (or which portion of the light)
