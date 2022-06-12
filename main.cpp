@@ -1,5 +1,6 @@
 #include <complex>
 #include <memory>
+#include <algorithm>
 #include "image/image.h"
 #include "image/io/png.h"
 #include "geometry/point.h"
@@ -45,31 +46,37 @@ int main(int /*argc*/, char **/*argv[]*/)
             {
                 color = colorGround;
             }
-            for(auto object : objects)
-            {
-                if(object->hasIntersection(ray))
-                {
-                    auto intersections = object->getAllIntersections(ray);
 
-                    float closestIntersection = intersections[0];
-                    for(auto intersection : intersections)
-                    {
-                        closestIntersection = std::min(intersection, closestIntersection);
+            typedef std::pair<float, std::shared_ptr<Object>> Intersection;
+            std::vector<Intersection> intersections = {};
+
+            for(auto object : objects) {
+                if (object->hasIntersection(ray)) {
+                    const auto objectIntersections = object->getAllIntersections(ray);
+                    for (auto intersection: objectIntersections) {
+                        intersections.emplace_back(intersection, object);
                     }
-
-                    auto intersectionPoint = ray(closestIntersection);
-                    auto surfaceNormal = object->getNormal(intersectionPoint);
-
-                    // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
-                    // TODO: Cast shadow-ray to find out if the light is visible from the hit-point (or which portion of the light)
-                    // TODO: Add emitted light of the object
-                    color = sphereMaterial.calculateLighting(
-                        intersectionPoint, surfaceNormal, cameraOrigin,
-                        lightOrigin, lightColor
-                    );
-                    // TODO: Add reflected and refracted color
                 }
             }
+
+            if(!intersections.empty()) {
+                std::sort(intersections.begin(), intersections.end(),
+                          [](const Intersection &a, const Intersection &b) { return a.first < b.first; });
+
+                Intersection closestIntersection = *intersections.begin();
+                const auto intersectionPoint = ray(closestIntersection.first);
+                const auto surfaceNormal = closestIntersection.second->getNormal(intersectionPoint);
+
+                // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
+                // TODO: Cast shadow-ray to find out if the light is visible from the hit-point (or which portion of the light)
+                // TODO: Add emitted light of the object
+                color = sphereMaterial.calculateLighting(
+                    intersectionPoint, surfaceNormal, cameraOrigin,
+                    lightOrigin, lightColor
+                );
+                // TODO: Add reflected and refracted color
+            }
+
             image.setPixel(
                 row, column,
                 {
