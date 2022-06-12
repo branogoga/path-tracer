@@ -17,6 +17,7 @@ public:
     bool hasIntersection(const geometry::Ray& ray) override;
     std::vector<float> getAllIntersections(const geometry::Ray& ray) override;
     geometry::Vector getNormal(const geometry::Point& intersectionPoint) override;
+    TextureCoordinates getTextureCoordinates(const geometry::Point& point) override;
 
 private:
     geometry::Vector n;
@@ -26,3 +27,5 @@ private:
 bool hasIntersection(const geometry::Ray& ray, const Plane& plane);
 std::vector<float> getAllIntersections(const geometry::Ray& ray, const Plane& plane);
 geometry::Vector getNormal(const geometry::Point&, const Plane& plane);
+TextureCoordinates getTextureCoordinates(const geometry::Point& point, const Plane& plane);
+

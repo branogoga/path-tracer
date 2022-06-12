@@ -1,5 +1,6 @@
 #include <iostream>
 #include "plane.h"
+#include "../geometry/axis.h"
 
 Plane::Plane(const geometry::Vector& n, float d) : n(n), d(d)
 {
@@ -28,6 +29,11 @@ std::vector<float> Plane::getAllIntersections(const geometry::Ray& ray)
 geometry::Vector Plane::getNormal(const geometry::Point& intersectionPoint)
 {
     return ::getNormal(intersectionPoint, *this);
+}
+
+TextureCoordinates Plane::getTextureCoordinates(const geometry::Point& intersectionPoint)
+{
+    return ::getTextureCoordinates(intersectionPoint, *this);
 }
 
 bool hasIntersection(const geometry::Ray& ray, const Plane& plane)
@@ -61,5 +67,33 @@ geometry::Vector getNormal(const geometry::Point&, const Plane& plane)
 {
     return plane.getNormal();
 }
+
+geometry::Vector getPrimaryTextureDirection(const geometry::Vector& n)
+{
+    // return geometry::Vector({ n[geometry::Axis::X], -n[geometry::Axis::Y], 0.0 });
+
+    auto a = cross(n, geometry::Vector({1.0, 0.0, 0.0}));
+    auto b = cross(n, geometry::Vector({0.0, 1.0, 0.0}));
+
+    auto max_ab = dot(a, a) < dot(b, b) ? b : a;
+
+    auto c = cross(n, geometry::Vector({0.0, 0.0, 1.0}));
+
+    return normalize(dot(max_ab, max_ab) < dot(c, c) ? c : max_ab);
+}
+
+TextureCoordinates getTextureCoordinates(const geometry::Point& point, const Plane& plane)
+{
+    geometry::Vector n = plane.getNormal();
+    geometry::Vector u = getPrimaryTextureDirection(n);
+    geometry::Vector v = normalize(cross(n,u));
+    geometry::Vector o = point - geometry::Point({0.0, 0.0, 0.0});
+
+    return TextureCoordinates(
+            geometry::dot(u, o),
+            geometry::dot(v, o)
+            );
+}
+
 
 

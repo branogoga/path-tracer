@@ -6,6 +6,15 @@
 #include <vector>
 #include <memory>
 
+struct TextureCoordinates
+{
+public:
+    TextureCoordinates(float u, float v);
+
+    float u;
+    float v;
+};
+
 class Shape
 {
 public:
@@ -15,6 +24,7 @@ public:
     virtual bool hasIntersection(const geometry::Ray& ray) = 0;
     virtual std::vector<float> getAllIntersections(const geometry::Ray& ray) = 0;
     virtual geometry::Vector getNormal(const geometry::Point&) = 0;
+    virtual TextureCoordinates getTextureCoordinates(const geometry::Point& point) = 0;
 };
 
 class Object

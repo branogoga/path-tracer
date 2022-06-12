@@ -90,3 +90,37 @@ TEST(Sphere, normal_negative_y_axis)
     EXPECT_FLOAT_EQ(-1.0, normal[Axis::Y]);
     EXPECT_FLOAT_EQ(0.0, normal[Axis::Z]);
 }
+
+TEST(Sphere, texture_coordinates)
+{
+    auto sphere = Sphere(Point({0.0, 0.0, -10.0}), 1.0f);
+    auto p1 = Point({0.0, 0.0, -11.0});
+    auto uv1 = getTextureCoordinates(p1, sphere);
+    EXPECT_FLOAT_EQ(3.1415927, uv1.u);
+    EXPECT_FLOAT_EQ(0.0, uv1.v);
+
+    auto p2 = Point({0.0, 0.0, -9.0});
+    auto uv2 = getTextureCoordinates(p2, sphere);
+    EXPECT_FLOAT_EQ(0.0, uv2.u); // ?
+    EXPECT_FLOAT_EQ(0.0, uv2.v);
+
+    auto p3 = Point({1.0, 0.0, -10.0});
+    auto uv3 = getTextureCoordinates(p3, sphere);
+    EXPECT_FLOAT_EQ(1.5707964, uv3.u);
+    EXPECT_FLOAT_EQ(0.0, uv3.v);
+
+    auto p4 = Point({-1.0, 0.0, -10.0});
+    auto uv4 = getTextureCoordinates(p4, sphere);
+    EXPECT_FLOAT_EQ(1.5707964, uv4.u);
+    EXPECT_FLOAT_EQ(3.1415927, uv4.v);
+
+    auto p5 = Point({0.0, 1.0, -10.0});
+    auto uv5 = getTextureCoordinates(p5, sphere);
+    EXPECT_FLOAT_EQ(1.5707964, uv5.u);
+    EXPECT_FLOAT_EQ(1.5707964, uv5.v);
+
+    auto p6 = Point({0.0, -1.0, -10.0});
+    auto uv6 = getTextureCoordinates(p6, sphere);
+    EXPECT_FLOAT_EQ(1.5707964, uv6.u);
+    EXPECT_FLOAT_EQ(-1.5707964, uv6.v);
+}
