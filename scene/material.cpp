@@ -8,6 +8,8 @@ Material::Material(Color color, Color diffusivity, Color reflectivity, float ref
     , reflectionExponent(reflectionExponent)
     , ambientLightCoeficient(ambientLightCoeficient)
 {
+    isDiffusive = diffusivity[Color::R] > 0.0 && diffusivity[Color::G] > 0.0 && diffusivity[Color::B] > 0.0;
+    isReflective = reflectivity[Color::R] > 0.0 && reflectivity[Color::G] > 0.0 && reflectivity[Color::B] > 0.0;
 }
 
 Color   Material::calculateLighting(
@@ -18,14 +20,22 @@ Color   Material::calculateLighting(
         const Color& lightColor // TODO: Multiple light sources
 ) const
 {
-    auto s = normalize(lightOrigin - intersectionPoint);
-    auto n = normalize(surfaceNormal);// TODO: require normalized, reduce duplication
-    auto r = reflect(s, n);
-    const float lambert = std::max(dot(s, n), 0.0f);
-    const float phong = std::pow(std::max(dot(r, n), 0.0f), reflectionExponent);
-    auto lightingCoefficient = ambientLightCoeficient + diffusivity * lambert + reflectivity * phong;
-    lightingCoefficient[Color::R]=std::min(lightingCoefficient[Color::R], 1.0f);
-    lightingCoefficient[Color::G]=std::min(lightingCoefficient[Color::G], 1.0f);
-    lightingCoefficient[Color::B]=std::min(lightingCoefficient[Color::B], 1.0f);
+    auto lightingCoefficient = ambientLightCoeficient;
+    if(isDiffusive || isReflective) {
+        auto n = normalize(surfaceNormal);// TODO: require normalized, reduce duplication
+        auto s = normalize(lightOrigin - intersectionPoint);
+        if (isDiffusive) {
+            const float lambert = std::max(dot(s, n), 0.0f);
+            lightingCoefficient += diffusivity * lambert;
+        }
+        if (isReflective) {
+            auto r = reflect(s, n);
+            const float phong = std::pow(std::max(dot(r, n), 0.0f), reflectionExponent);
+            lightingCoefficient += reflectivity * phong;
+        }
+        lightingCoefficient[Color::R]=std::min(lightingCoefficient[Color::R], 1.0f);
+        lightingCoefficient[Color::G]=std::min(lightingCoefficient[Color::G], 1.0f);
+        lightingCoefficient[Color::B]=std::min(lightingCoefficient[Color::B], 1.0f);
+    }
     return color * lightColor * lightingCoefficient;
 }

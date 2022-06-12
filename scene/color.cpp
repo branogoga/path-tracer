@@ -14,6 +14,15 @@ const float& Color::operator[](size_t index) const
     return data[index];
 }
 
+Color& Color::operator+=(const Color& c)
+{
+    for(size_t i = 0; i <  data.size(); ++i) {
+        data[i] += c[i];
+    }
+    return *this;
+}
+
+
 Color operator*(const Color& c, float k)
 {
     // TODO: How to work with alpha channel?

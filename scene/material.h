@@ -20,7 +20,9 @@ public:
 
 private:
     Color color;
+    bool  isDiffusive;
     Color diffusivity;
+    bool  isReflective;
     Color reflectivity;
     float reflectionExponent;
     Color ambientLightCoeficient;

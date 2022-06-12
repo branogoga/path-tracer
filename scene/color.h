@@ -16,6 +16,9 @@ public:
 
     float& operator[](size_t index);
     const float& operator[](size_t index) const;
+
+    Color& operator+=(const Color& c);
+
 private:
     std::array<float, 4>    data;
 };

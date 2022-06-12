@@ -19,11 +19,11 @@ int main(int /*argc*/, char **/*argv[]*/)
     const auto colorBackground = Colors::SkyBlue;
 
     const Material materialGrass(
-            Colors::White,
+            Colors::GrassGreen,
             Color(0.0, 0.0, 0.0),
             Color(0.0, 0.0, 0.0),
             1.0,
-            Colors::GrassGreen
+            Color(1.0, 1.0, 1.0)
             );
 
     auto groundPlane = std::make_shared<Plane>(geometry::Vector({0.0f, +1.0f, 0.0f}), +2.5);
