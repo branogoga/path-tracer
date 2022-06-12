@@ -17,6 +17,21 @@ const geometry::Point& Sphere::getOrigin() const
     return origin;
 }
 
+bool Sphere::hasIntersection(const geometry::Ray& ray)
+{
+    return ::hasIntersection(ray, *this);
+}
+
+std::vector<float> Sphere::getAllIntersections(const geometry::Ray& ray)
+{
+    return ::getAllIntersections(ray, *this);
+}
+
+geometry::Vector Sphere::getNormal(const geometry::Point& intersectionPoint)
+{
+    return ::getNormal(intersectionPoint, *this);
+}
+
 bool hasIntersection(const geometry::Ray& ray, const Sphere& sphere)
 {
     geometry::Vector L = ray.getOrigin() - sphere.getOrigin();

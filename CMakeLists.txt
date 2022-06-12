@@ -63,7 +63,7 @@ set(
     scene/sphere.h
     scene/sphere.cpp
     scene/sphere.test.cpp
-)
+        scene/object.h)
 
 set(
     UTILS_SOURCES
@@ -80,7 +80,7 @@ set(
     ${UTILS_SOURCES}
 )
 
-add_executable(PathTracer main.cpp ${SOURCES})
+add_executable(PathTracer main.cpp ${SOURCES} scene/object.h)
 conan_target_link_libraries(PathTracer)
 
 # set warning level

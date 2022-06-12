@@ -1,4 +1,5 @@
 #include <complex>
+#include <memory>
 #include "image/image.h"
 #include "image/io/png.h"
 #include "geometry/point.h"
@@ -8,6 +9,7 @@
 #include "scene/plane.h"
 #include "utils/timer.h"
 #include "scene/material.h"
+#include "scene/object.h"
 
 int main(int /*argc*/, char **/*argv[]*/)
 {
@@ -16,10 +18,11 @@ int main(int /*argc*/, char **/*argv[]*/)
     const auto colorBackground = Colors::SkyBlue;
     const auto colorGround = Colors::GrassGreen;
 
-    const auto ground = Plane(geometry::Vector({0.0f, 1.0f, 0.0f}), +1.0);
-
-    const std::vector<Sphere> objects = {
-            Sphere(geometry::Point({0.0f, 0.0f, -10.0f}), 5.0f),
+    auto ground = std::make_shared<Plane>(geometry::Vector({0.0f, 1.0f, 0.0f}), +1.0);
+    auto bigSphere = std::make_shared<Sphere>(geometry::Point({0.0f, 0.0f, -15.0f}), 5.0f);
+    auto smallSphere = std::make_shared<Sphere>(geometry::Point({1.5f, 2.0f, -10.0f}), 1.0f);
+    std::vector<std::shared_ptr<Object>> objects = {
+        bigSphere, smallSphere
     };
 
     Material sphereMaterial = Materials::Bronze;
@@ -38,15 +41,15 @@ int main(int /*argc*/, char **/*argv[]*/)
             geometry::Ray ray = geometry::Ray(cameraOrigin, pixel);
 
             auto color = colorBackground;
-            if(hasIntersection(ray, ground))
+            if(ground->hasIntersection(ray))
             {
                 color = colorGround;
             }
             for(auto object : objects)
             {
-                if(hasIntersection(ray, object))
+                if(object->hasIntersection(ray))
                 {
-                    auto intersections = getAllIntersections(ray, object);
+                    auto intersections = object->getAllIntersections(ray);
 
                     float closestIntersection = intersections[0];
                     for(auto intersection : intersections)
@@ -55,7 +58,7 @@ int main(int /*argc*/, char **/*argv[]*/)
                     }
 
                     auto intersectionPoint = ray(closestIntersection);
-                    auto surfaceNormal = getNormal(intersectionPoint, object);
+                    auto surfaceNormal = object->getNormal(intersectionPoint);
 
                     // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
                     // TODO: Cast shadow-ray to find out if the light is visible from the hit-point (or which portion of the light)

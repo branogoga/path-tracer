@@ -15,6 +15,21 @@ float Plane::getOffset() const
     return d;
 }
 
+bool Plane::hasIntersection(const geometry::Ray& ray)
+{
+    return ::hasIntersection(ray, *this);
+}
+
+std::vector<float> Plane::getAllIntersections(const geometry::Ray& ray)
+{
+    return ::getAllIntersections(ray, *this);
+}
+
+geometry::Vector Plane::getNormal(const geometry::Point& intersectionPoint)
+{
+    return ::getNormal(intersectionPoint, *this);
+}
+
 bool hasIntersection(const geometry::Ray& ray, const Plane& plane)
 {
     return !getAllIntersections(ray, plane).empty();

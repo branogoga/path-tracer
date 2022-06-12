@@ -3,8 +3,9 @@
 #include <vector>
 #include "../geometry/vector.h"
 #include "../geometry/ray.h"
+#include "object.h"
 
-class Plane
+class Plane : public Object
 {
 public:
     Plane(const geometry::Vector& n, float d);
@@ -12,6 +13,10 @@ public:
 
     const geometry::Vector& getNormal() const;
     float getOffset() const;
+
+    bool hasIntersection(const geometry::Ray& ray) override;
+    std::vector<float> getAllIntersections(const geometry::Ray& ray) override;
+    geometry::Vector getNormal(const geometry::Point& intersectionPoint) override;
 
 private:
     geometry::Vector n;
