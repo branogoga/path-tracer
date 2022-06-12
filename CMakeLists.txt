@@ -57,13 +57,15 @@ set(
     scene/material.h
     scene/material.cpp
     scene/material.test.cpp
+    scene/object.h
+    scene/object.cpp
     scene/plane.cpp
     scene/plane.h
     scene/plane.test.cpp
     scene/sphere.h
     scene/sphere.cpp
     scene/sphere.test.cpp
-        scene/object.h)
+)
 
 set(
     UTILS_SOURCES

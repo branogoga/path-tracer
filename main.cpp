@@ -17,16 +17,23 @@ int main(int /*argc*/, char **/*argv[]*/)
     Timer timer("Calculation of ray-traced scene took ");
 
     const auto colorBackground = Colors::SkyBlue;
-    const auto colorGround = Colors::GrassGreen;
 
-    auto ground = std::make_shared<Plane>(geometry::Vector({0.0f, 1.0f, 0.0f}), +1.0);
+    const Material materialGrass(
+            Colors::White,
+            Color(0.0, 0.0, 0.0),
+            Color(0.0, 0.0, 0.0),
+            1.0,
+            Colors::GrassGreen
+            );
+
+    auto groundPlane = std::make_shared<Plane>(geometry::Vector({0.0f, +1.0f, 0.0f}), +2.5);
     auto bigSphere = std::make_shared<Sphere>(geometry::Point({0.0f, 0.0f, -15.0f}), 5.0f);
     auto smallSphere = std::make_shared<Sphere>(geometry::Point({1.5f, 2.0f, -10.0f}), 1.0f);
     std::vector<std::shared_ptr<Object>> objects = {
-        bigSphere, smallSphere
+        std::make_shared<Object>(groundPlane, materialGrass),
+        std::make_shared<Object>(bigSphere, Materials::Bronze),
+        std::make_shared<Object>(smallSphere, Materials::BlackPlastic)
     };
-
-    Material sphereMaterial = Materials::Bronze;
 
     const geometry::Point lightOrigin({0.0, -2.5, 0.0});
     const auto lightColor = Colors::White;
@@ -36,17 +43,12 @@ int main(int /*argc*/, char **/*argv[]*/)
         for(size_t column = 0; column < image.getWidth(); ++column) {
 
             // Cast ray from Camera origin [0, 0, 0] through the viewport [-1, -1] - [+1, +1] in plane z=-1
-            geometry::Point cameraOrigin({0.0, 0.0, 0.0});
+            geometry::Point cameraOrigin({0.0, 0.01, 0.0});
             // TODO: Center of pixel?
             geometry::Point pixel({2*((float)column/image.getWidth())-1.0f, 2*((float)row/image.getHeight())-1.0f, -1.0f});
             geometry::Ray ray = geometry::Ray(cameraOrigin, pixel);
 
             auto color = colorBackground;
-            if(ground->hasIntersection(ray))
-            {
-                color = colorGround;
-            }
-
             struct Intersection
             {
                 Intersection(float t, std::shared_ptr<Object> object) : t(t), object(object) {};
@@ -57,8 +59,8 @@ int main(int /*argc*/, char **/*argv[]*/)
             std::vector<Intersection> intersections = {};
 
             for(auto object : objects) {
-                if (object->hasIntersection(ray)) {
-                    const auto objectIntersections = object->getAllIntersections(ray);
+                if (object->getShape()->hasIntersection(ray)) {
+                    const auto objectIntersections = object->getShape()->getAllIntersections(ray);
                     for (auto intersection: objectIntersections) {
                         intersections.emplace_back(Intersection(intersection, object));
                     }
@@ -71,12 +73,12 @@ int main(int /*argc*/, char **/*argv[]*/)
 
                 Intersection closestIntersection = *intersections.begin();
                 const auto intersectionPoint = ray(closestIntersection.t);
-                const auto surfaceNormal = closestIntersection.object->getNormal(intersectionPoint);
+                const auto surfaceNormal = closestIntersection.object->getShape()->getNormal(intersectionPoint);
 
                 // TODO: Overwrite shading only for closes intersection amongst all the objects !!!
                 // TODO: Cast shadow-ray to find out if the light is visible from the hit-point (or which portion of the light)
                 // TODO: Add emitted light of the object
-                color = sphereMaterial.calculateLighting(
+                color = closestIntersection.object->getMaterial().calculateLighting(
                     intersectionPoint, surfaceNormal, cameraOrigin,
                     lightOrigin, lightColor
                 );

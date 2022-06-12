@@ -5,7 +5,7 @@
 #include "../geometry/ray.h"
 #include "object.h"
 
-class Sphere : public Object
+class Sphere : public Shape
 {
 public:
     Sphere(const geometry::Point& origin, const float radius);

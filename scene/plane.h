@@ -5,7 +5,7 @@
 #include "../geometry/ray.h"
 #include "object.h"
 
-class Plane : public Object
+class Plane : public Shape
 {
 public:
     Plane(const geometry::Vector& n, float d);
