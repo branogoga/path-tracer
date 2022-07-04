@@ -42,28 +42,27 @@ TextureCoordinates Sphere::getTextureCoordinates(const geometry::Point& intersec
     return ::getTextureCoordinates(intersectionPoint, *this);
 }
 
-bool hasIntersection(const geometry::Ray& ray, const Sphere& sphere)
+QuadraticEquation createIntersectionEquation(const geometry::Ray& ray, const Sphere& object)
 {
-    geometry::Vector L = ray.getOrigin() - sphere.getOrigin();
+    geometry::Vector L = ray.getOrigin() - object.getOrigin();
     geometry::Vector d = ray.getDirection();
-    float r = sphere.getRadius();
+    float r = object.getRadius();
     float a = dot(d,d);
     float b = 2*dot(d,L);
     float c = dot(L,L) - r*r;
 
-    return QuadraticEquation(a, b, c).hasRoot();
+    // TODO: Remove negative roots - points behind the camera
+    return QuadraticEquation(a, b, c);
+}
+
+bool hasIntersection(const geometry::Ray& ray, const Sphere& sphere)
+{
+    return createIntersectionEquation(ray, sphere).hasRoot();
 }
 
 std::vector<float> getAllIntersections(const geometry::Ray& ray, const Sphere& sphere)
 {
-    geometry::Vector L = ray.getOrigin() - sphere.getOrigin();
-    geometry::Vector d = ray.getDirection();
-    float r = sphere.getRadius();
-    float a = dot(d,d);
-    float b = 2*dot(d,L);
-    float c = dot(L,L) - r*r;
-
-    auto roots = QuadraticEquation(a, b, c).getRoots();
+    auto roots = createIntersectionEquation(ray, sphere).getRoots();
     roots.erase(
         std::remove_if(
             roots.begin(),
