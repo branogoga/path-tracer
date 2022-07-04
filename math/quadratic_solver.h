@@ -15,6 +15,11 @@ public:
 
     float discriminant() const;
 
+    bool isQuadratic() const;
+    bool isLinear() const;
+    bool isConstant() const;
+    unsigned degree() const;
+
 private:
     float a;
     float b;

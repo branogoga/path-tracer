@@ -2,6 +2,30 @@
 
 #include "gtest/gtest.h"
 
+TEST(QuadraticEquation, degree_quadratic)
+{
+    auto quadratic = QuadraticEquation(1.0f, 0.0, 0.0);
+    EXPECT_EQ(2u, quadratic.degree());
+}
+
+TEST(QuadraticEquation, degree_quadratic_precision)
+{
+    auto quadratic = QuadraticEquation(1E-07, 1.0, 0.0);
+    EXPECT_EQ(1u, quadratic.degree());
+}
+
+TEST(QuadraticEquation, degree_linear)
+{
+    auto quadratic = QuadraticEquation(0.0, 1.0, 0.0);
+    EXPECT_EQ(1u, quadratic.degree());
+}
+
+TEST(QuadraticEquation, degree_linear_precision)
+{
+    auto quadratic = QuadraticEquation(0.0, 1E-07, 0.0);
+    EXPECT_EQ(0u, quadratic.degree());
+}
+
 TEST(QuadraticEquation, hasRoots_one)
 {
     auto quadratic = QuadraticEquation(1.0f, 0.0, 0.0);
@@ -14,9 +38,15 @@ TEST(QuadraticEquation, hasRoots_two)
     EXPECT_TRUE(quadratic.hasRoot());
 }
 
-TEST(QuadraticEquation, hasRoots_none)
+TEST(QuadraticEquation, hasRoots_none_quadratic)
 {
     auto quadratic = QuadraticEquation(1.0f, 0.0, +1.0);
+    EXPECT_FALSE(quadratic.hasRoot());
+}
+
+TEST(QuadraticEquation, hasRoots_none_constant)
+{
+    auto quadratic = QuadraticEquation(0.0f, 0.0, +1.0);
     EXPECT_FALSE(quadratic.hasRoot());
 }
 
@@ -50,9 +80,15 @@ TEST(QuadraticEquation, getRoots_two)
     EXPECT_EQ(std::vector<float>({+1.0f, -1.0f}), quadratic.getRoots());
 }
 
-TEST(QuadraticEquation, getRoots_none)
+TEST(QuadraticEquation, getRoots_none_quadratic)
 {
     auto quadratic = QuadraticEquation(1.0f, 0.0, +1.0);
+    EXPECT_EQ(std::vector<float>({}), quadratic.getRoots());
+}
+
+TEST(QuadraticEquation, getRoots_none_constant)
+{
+    auto quadratic = QuadraticEquation(0.0f, 0.0, +1.0);
     EXPECT_EQ(std::vector<float>({}), quadratic.getRoots());
 }
 
